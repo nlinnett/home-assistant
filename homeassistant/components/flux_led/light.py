@@ -256,22 +256,38 @@ class FluxLight(Light):
     @property
     def effect_list(self):
         """Return the list of supported effects."""
+        elist = [s.name for s in self._bulb.effect_list()]
+        elist.append(EFFECT_COLORLOOP)
+        elist.append(EFFECT_RANDOM)
         if self._custom_effect:
-            return FLUX_EFFECT_LIST + [EFFECT_CUSTOM]
+            elist.append(EFFECT_CUSTOM)
+        return elist
 
-        return FLUX_EFFECT_LIST
+        # if self._custom_effect:
+        #     return FLUX_EFFECT_LIST + [EFFECT_CUSTOM]
+
+        # return FLUX_EFFECT_LIST
 
     @property
     def effect(self):
         """Return the current effect."""
-        current_mode = self._bulb.raw_state[3]
+        current_mode = self._bulb.effect_current()
 
         if current_mode == EFFECT_CUSTOM_CODE:
             return EFFECT_CUSTOM
 
-        for effect, code in EFFECT_MAP.items():
+        for effect, code in [(i.name, i.value) for i in self._bulb.effect_list()]:
             if current_mode == code:
                 return effect
+
+        # current_mode = self._bulb.raw_state[3]
+
+        # if current_mode == EFFECT_CUSTOM_CODE:
+        #     return EFFECT_CUSTOM
+
+        # for effect, code in EFFECT_MAP.items():
+        #     if current_mode == code:
+        #         return effect
 
         return None
 
