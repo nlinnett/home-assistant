@@ -342,8 +342,9 @@ class FluxLight(Light):
             return
 
         # Effect selection
-        if effect in EFFECT_MAP:
-            self._bulb.setPresetPattern(EFFECT_MAP[effect], 50)
+        emap = {i.name: i.value for i in self._bulb.effect_list()}
+        if effect in emap:
+            self._bulb.setPresetPattern(emap[effect], 50)
             return
 
         # Preserve current brightness on color/white level change
